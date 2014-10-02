@@ -20,6 +20,8 @@ var usemin = require('gulp-usemin');
 var htmlmin = require('gulp-htmlmin');
 var rev    = require('gulp-rev');
 var clean = require('gulp-clean');
+var html2js = require('gulp-ng-html2js');
+var concat = require('gulp-concat');
 
 /* javascript */
 var uglify = require('gulp-uglify');
@@ -55,6 +57,19 @@ var useminOpt = {
   js: [uglify(), rev()]
 };
 
+/**
+ * template inlining
+ */
+gulp.task('html2js', function() {
+  gulp.src('src/templates/**/*.html')
+    .pipe(plumber())
+    .pipe(html2js({
+      moduleName: 'tpl',
+      prefix: 'templates/'
+    }))
+    .pipe(concat('templates.js'))
+    .pipe(gulp.dest('src/js'));
+});
 
 
 /**
@@ -133,6 +148,24 @@ gulp.task('server', ['bower'], function() {
   });
 });
 
+gulp.task('server:test', ['bower', 'html2js'], function() {
+  connect.server({
+    root: ['src', '.'],
+    port: opt.port,
+    middleware:function(){
+      return [
+        require('./dev/bonitaMockMiddleware.js'),
+        rewriter([
+          '^/bonita/portal http://localhost:8080/bonita/portal [P]',
+          '^/bonita/API http://localhost:8080/bonita/API [P]',
+          '^/bonita/'+folderName+'/css/themeResource http://localhost:8080/bonita/portal/themeResource [P]',
+          '^/bonita/'+folderName+' http://localhost:3000 [P]',
+          '^/bonita http://localhost:3000 [P]'
+        ])
+      ];
+    }
+  });
+});
 
 /**
  * Watch task
