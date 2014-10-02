@@ -1,7 +1,13 @@
 (function (module, verbose) {
   'use strict';
 
+
+  var fs = require('fs');
   var querystring = require('querystring');
+
+  function clone(o){
+    return JSON.parse(JSON.stringify(o));
+  }
 
   var debug = !verbose ? function () {
   } : function (message) {
@@ -12,7 +18,7 @@
 
     function findMock(url) {
       for(var i = 0; i < this._mocks.length; i++) {
-        debug(this._mocks[i]);
+
         if(this._mocks[i].url.test(url)) {
           return this._mocks[i].mock;
         }
@@ -62,7 +68,7 @@
     }
   }
 
-  function mock(json) {
+  function mockJson(json) {
     return function (request, response) {
       var data = json;
       var headers = { 'Content-Type': 'application/json' };
@@ -76,11 +82,30 @@
     };
   }
 
-  function when(method, url) {
+  function mockHtml(html) {
+    return function (request, response) {
+      var data = html;
+      var headers = { 'Content-Type': 'text/html; charset=UTF-8' };
+      response.writeHead(200, headers);
+      response.end(data);
+    };
+  }
+
+  function when(method, url, type) {
+    type  = type || 'json';
     return {
       respond: function (json) {
         debug(url + ' => ' + JSON.stringify(json));
-        mocks[method].addMock(url, mock(json));
+        switch(type) {
+          case 'html':
+            mocks[method].addMock(url, mockHtml(json));
+            break;
+
+          case 'json':
+          default:
+            mocks[method].addMock(url, mockJson(json));
+            break;
+        }
       }
     };
   }
@@ -92,7 +117,76 @@
     })(request, response);
   };
 
-  when('GET', /^\/bonita\/API\/case.*$/).respond(require('./case-mock.json'));
-  when('GET', /^\/bonita\/API\/humanTask.*$/).respond(require('./humanTask-mock.json'));
+
+
+  var mockUser = require('./user-mock.json');
+  var mockCase = require('./case-mock.json');
+  var mockTasks = require('./humanTasks-mock.json');
+  var mockProcess = require('./processes-mock.json');
+
+  var mockTasksAsc = mockTasks.sort(function(a, b){
+    return a.name.localeCompare(b.name);
+  });
+
+  var mockTasksDesc = mockTasks.slice().reverse();
+  var mockTasksFiltered = mockTasksAsc.filter(function(task){
+    return task.displayName.match(/^a/i);
+  });
+
+  var mockMyTask = mockTasksAsc.slice(-2);
+  var mockPoolTask = mockTasksAsc.slice(0, -2);
+  var mockDoneTasks = mockTasksAsc.slice(0,5);
+  var mockProcessTasks = mockTasksAsc.slice(-2);
+
+  var takeTask = clone(mockTasksAsc[0]);
+  takeTask.assigned_id = mockUser.user_id;
+
+  var releaseTask = clone(mockTasksDesc[0]);
+  releaseTask.assigned_id = '';
+
+  var UserRegexp = /bonita\/API\/system\/session.*$/;
+  var CaseRegexp =  /bonita\/API\/bpm\/case.*$/ ;
+  var ProcessRegexp = /bonita\/API\/bpm\/process.*$/;
+
+  var HumanTaskAllCount = /bonita\/API\/bpm\/humanTask.*\&f=user_id%3D[1-9]+\&p=0$/;
+  var HumanTaskMYCount = /bonita\/API\/bpm\/humanTask.*\&f=assigned_id%3D[1-9]+/;
+  var HumanTaskPOOLCount = /bonita\/API\/bpm\/humanTask.*\&f=assigned_id%3D0\&f=user_id%3D[1-9]+/;
+  var HumanTaskProcess = /bonita\/API\/bpm\/humanTask.*\&f=processId%3D[0-9]+/;
+
+  var HumanTaskAscRegexp = /bonita\/API\/bpm\/humanTask.*\&f=user_id%3D[1-9]+.*\&o=displayName\+ASC/;
+  var HumanTaskDescRegexp = /bonita\/API\/bpm\/humanTask.*\&f=user_id%3D[1-9]+.*\&o=displayName\+DESC/;
+
+  var HumanTaskFilterRegexp = /bonita\/API\/bpm\/humanTask.*\&s=a.*/;
+  var ArchivedHumanTaskRegexp = /bonita\/API\/bpm\/archivedHumanTask.*/;
+
+   var TakeHumanTaskRegexp = /bonita\/API\/bpm\/humanTask\/2.*/;
+  var ReleaseHumanTaskRegexp = /bonita\/API\/bpm\/humanTask\/19.*/;
+
+  var formRegexp  = /bonita\/portal\/homepage\?.*ui=form.*/;
+
+  when('GET', UserRegexp ).respond( mockUser );
+  when('GET', CaseRegexp).respond( mockCase );
+  when('GET', ProcessRegexp).respond( mockProcess );
+
+  //order specific request before
+  when('GET', HumanTaskFilterRegexp).respond( mockTasksFiltered );
+  when('GET', HumanTaskProcess).respond( mockProcessTasks );
+
+  when('GET', HumanTaskAllCount).respond( mockTasksAsc );
+  when('GET', HumanTaskMYCount).respond( mockMyTask );
+  when('GET', HumanTaskPOOLCount).respond( mockPoolTask );
+
+  when('GET', HumanTaskAscRegexp).respond( mockTasksAsc );
+
+  when('GET', HumanTaskDescRegexp).respond( mockTasksDesc );
+
+  when('PUT', TakeHumanTaskRegexp).respond( takeTask );
+  when('PUT', ReleaseHumanTaskRegexp).respond( releaseTask );
+
+  when('GET', ArchivedHumanTaskRegexp).respond( mockDoneTasks );
+
+  // include html fixtures
+  // var form = fs.readFileSync(__dirname+'/fixtures/form.html', 'utf8');
+  // when('GET', formRegexp, 'html').respond( form );
 
 })(module, false);

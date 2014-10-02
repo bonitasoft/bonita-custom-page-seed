@@ -18,9 +18,12 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
+      'bower_components/angular/*.js',
+      'bower_components/angular-*/*.js',
       'src/**/*.js',
-      'src/*.js',
-      'test/**/*Spec.js'
+      'test/unit/**/*Spec.js',
+      // include fixtures html  in karma webserver, available at /base/dev/fixtures
+      { pattern: 'dev/fixtures/**/*.html', included: false, served: true },
     ],
 
 
