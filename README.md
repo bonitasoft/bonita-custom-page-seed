@@ -16,6 +16,9 @@ To create a new custom page, just duplicate this folder and then run
 
 - ``npm run dev`` will start a local server+livereload  and open your default browser.
 - ``npm run dist`` will create a dist folder with production ready js / css files. It also run ``mvn package`` which generate a zip files containing your custom page. You can find it inside the __target__ dir).
+- ``npm run server-mock`` will start a mock server, useful for e2e test
+- ``npm run protractor`` will launch e2e test suite 
+- ``npm test`` will run the karam test suite
 
 # Developement
 ```shell
