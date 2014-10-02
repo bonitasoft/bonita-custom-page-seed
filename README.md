@@ -1,13 +1,17 @@
 listing template project
 ========================
 
-This project contains a seed project for building listing type custom pages.
-It also supply a development ready environment (with a local server and livereload ).
+This project contains a seed project for building custom pages.
+It deliver a zip with the following mandatory structure.
+  ```index.[html | groovy]```
+  ```page.properties``` - contains name, display name & description of the page 
+  ```resources/``` - contains all needed resources
+
+It also supply a development ready environment (with a local server and livereload).
 
 To create a new custom page, just duplicate this folder and then run
 ```npm install```
-
-
+  
 # Available commands
 
 - ``npm run dev`` will start a local server+livereload  and open your default browser.
