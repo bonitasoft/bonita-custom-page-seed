@@ -24,3 +24,6 @@ dependency-reduced-pom.xml
 node_modules
 bower_components
 dist
+npm-debug.log
+
+**/src/js/templates.js
