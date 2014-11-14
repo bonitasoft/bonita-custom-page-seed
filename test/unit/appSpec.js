@@ -9,7 +9,7 @@ describe('Custom Page App test', function() {
   describe('AppCtrl', function() {
     beforeEach(inject(function($injector){
       scope = $injector.get('$rootScope');
-      ctrl  = $injector.get('$controller')('AppCtrl',{
+      ctrl  = $injector.get('$controller')('AppCtrl', {
         $scope: scope
       });
     }));

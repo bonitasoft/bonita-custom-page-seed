@@ -1,6 +1,6 @@
 {
-  "name": "listing-page",
-  "version": "0.0.0",
+  "name": "bonita-custom-page",
+  "version": "1.0.0",
   "description": "",
   "main": "gulpfile.js",
   "scripts": {
@@ -13,6 +13,8 @@
   "author": "",
   "license": "GPL",
   "devDependencies": {
+    "angular-bootstrap": "~0.11.0",
+    "angular-mocks": "~1.3",
     "connect-modrewrite": "^0.7.9",
     "gulp": "^3.8.7",
     "gulp-bower": "0.0.6",
@@ -30,12 +32,16 @@
     "gulp-usemin": "^0.3.8",
     "gulp-zip": "^2.0.2",
     "jshint-stylish": "^0.4.0",
-    "properties": "^1.2.1"
+    "karma": "^0.12.23",
+    "karma-chrome-launcher": "^0.1.4",
+    "karma-jasmine": "^0.2.2",
+    "properties": "^1.2.1",
+    "protractor": "^1.3.1",
+    "run-sequence": "^1.0.1"
   },
   "dependencies": {
-    "karma": "^0.12.23",
-    "karma-jasmine": "^0.2.2",
-    "karma-chrome-launcher": "^0.1.4",
-    "protractor": "^1.3.1"
+    "angular": "~1.3",
+    "angular-bootstrap": "~0.11.0",
+    "bootstrap": "~3.2.0"
   }
 }

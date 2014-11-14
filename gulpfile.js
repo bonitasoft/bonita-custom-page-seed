@@ -15,7 +15,6 @@ var launch = require('gulp-open');
 var mockMMiddleware = require('./dev/bonitaMockMiddleware');
 
 /* build */
-var bower = require('gulp-bower');
 var usemin = require('gulp-usemin');
 var htmlmin = require('gulp-htmlmin');
 var rev = require('gulp-rev');
@@ -23,6 +22,7 @@ var clean = require('gulp-clean');
 var html2js = require('gulp-ng-html2js');
 var concat = require('gulp-concat');
 var zip = require('gulp-zip');
+var runSequence = require('run-sequence');
 
 /* javascript */
 var uglify = require('gulp-uglify');
@@ -78,18 +78,8 @@ gulp.task('html2js', function () {
     .pipe(gulp.dest('target/work'));
 });
 
-/**
- * bower task
- * Fetch bower dependencies
- */
-gulp.task('bower', function () {
-  return bower()
-    .pipe(plumber())
-    .pipe(gulp.dest('bower_components'));
-});
-
 /* usemin task */
-gulp.task('usemin', ['bower', 'jshint', 'html2js'], function () {
+gulp.task('usemin', ['html2js'], function () {
   return gulp.src('src/index.html')
     .pipe(plumber())
     .pipe(usemin(useminOpt))
@@ -125,7 +115,7 @@ gulp.task('jshint', function () {
 /**
  * Server task
  */
-gulp.task('server', ['bower', 'html2js'], function () {
+gulp.task('server', ['html2js'], function () {
   connect.server({
     root: ['src', '.'],
     port: opt.port,
@@ -149,7 +139,7 @@ gulp.task('server', ['bower', 'html2js'], function () {
  * Watch task
  * Launch a server with livereload
  */
-gulp.task('watch', ['server', 'jshint'], function () {
+gulp.task('watch', ['server'], function () {
   gulp
     .watch(['src/**/*.*'])
     .on('change', function () {
@@ -180,7 +170,7 @@ gulp.task('open', ['server'], function () {
  * tdd testing
  * Watch for file changes and re-run tests on each change
  */
-gulp.task('tdd', ['bower'], function (done) {
+gulp.task('tdd', function (done) {
   karma.start({
     configFile: __dirname + '/karma.conf.js'
   }, done);
@@ -192,5 +182,7 @@ gulp.task('zip', ['usemin', 'assets', 'repath'], function (done) {
     .pipe(gulp.dest('target'));
 });
 
-gulp.task('default', ['jshint', 'clean', 'zip']);
+gulp.task('default', function (done) {
+  runSequence(['jshint', 'clean'], 'zip', done);
+});
 gulp.task('dev', ['server', 'watch', 'open', 'tdd']);
