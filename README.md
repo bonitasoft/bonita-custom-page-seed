@@ -1,4 +1,4 @@
-listing template project
+Custom page Angular Seed 
 ========================
 
 This project contains a seed project for building custom pages.

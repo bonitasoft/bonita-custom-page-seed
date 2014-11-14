@@ -3,14 +3,15 @@
   "version": "1.0.0",
   "homepage": "https://github.com/bonitasoft/bonita-web-sp",
   "authors": [
-    "Lionel Breduillieard <lionel@lumographe.fr>"
+    "Lionel Breduillieard <lionel@lumographe.fr>",
+    "Vincent Elcrin <vincent.elcrin@bonitasoft.com>"
   ],
-  "description": "bonitasoft starter kit for developping custom pages",
+  "description": "bonitasoft starter kit to develop custom pages",
   "keywords": [
     "bonitasoft",
     "custom-page"
   ],
-  "license": "MIT",
+  "license": "GPL",
   "private": true,
   "ignore": [
     "**/.*",

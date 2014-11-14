@@ -17,10 +17,13 @@ target/
 # maven shade plugin
 dependency-reduced-pom.xml
 
+# maven node plugin
+node
+
 # merge files
 *.orig
 
-#node.js
+# node.js
 node_modules
 bower_components
 dist
