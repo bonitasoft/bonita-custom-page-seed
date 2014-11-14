@@ -17,7 +17,7 @@ To create a new custom page, just duplicate this folder and then run
 - ``npm run dev`` will start a local server+livereload  and open your default browser.
 - ``npm run build`` will create a target/dist folder with production ready js / css files. It also run generate a zip files containing your custom page. You can find it inside the __target__ dir.
 - ``npm run e2e`` will launch e2e test suite 
-- ``npm test`` will run the karam test suite
+- ``npm test`` will run unit test suite
 
 # Developement
 ```shell
