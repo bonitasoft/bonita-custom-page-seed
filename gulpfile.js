@@ -12,7 +12,6 @@ var plumber = require('gulp-plumber');
 var connect = require('gulp-connect');
 var rewriter = require('connect-modrewrite');
 var launch = require('gulp-open');
-var mockMMiddleware = require('./dev/bonitaMockMiddleware');
 
 /* build */
 var usemin = require('gulp-usemin');
@@ -31,6 +30,7 @@ var jshint = require('gulp-jshint');
 /* test */
 var gulp = require('gulp');
 var karma = require('karma').server;
+var protractor = require('gulp-protractor').protractor;
 
 /**
  * Configuration
@@ -55,6 +55,25 @@ var useminOpt = {
   html: [htmlmin(htmlminOpt)],
   js: [uglify(), rev()]
 };
+
+function serve(configuration) {
+  return connect.server({
+    root: ['src', '.'],
+    port: opt.port,
+    livereload: configuration.livereload,
+    middleware: function () {
+      return [
+        rewriter([
+          '^/bonita/portal http://localhost:8080/bonita/portal [P]',
+          '^/bonita/API http://localhost:8080/bonita/API [P]',
+          '^/bonita/' + folderName + '/css/themeResource http://localhost:8080/bonita/portal/themeResource [P]',
+          '^/bonita/' + folderName + ' http://localhost:3000 [P]',
+          '^/bonita http://localhost:3000 [P]'
+        ])
+      ];
+    }
+  });
+}
 
 gulp.task('clean', function () {
   return gulp.src('target', {
@@ -116,22 +135,8 @@ gulp.task('jshint', function () {
  * Server task
  */
 gulp.task('server', ['html2js'], function () {
-  connect.server({
-    root: ['src', '.'],
-    port: opt.port,
-    livereload: true,
-    middleware: function () {
-      return [
-        mockMMiddleware,
-        rewriter([
-          '^/bonita/portal http://localhost:8080/bonita/portal [P]',
-          '^/bonita/API http://localhost:8080/bonita/API [P]',
-          '^/bonita/' + folderName + '/css/themeResource http://localhost:8080/bonita/portal/themeResource [P]',
-          '^/bonita/' + folderName + ' http://localhost:3000 [P]',
-          '^/bonita http://localhost:3000 [P]'
-        ])
-      ];
-    }
+  serve({
+    livereload: true
   });
 });
 
@@ -176,10 +181,28 @@ gulp.task('tdd', function (done) {
   }, done);
 });
 
-gulp.task('zip', ['usemin', 'assets', 'repath'], function (done) {
+gulp.task('zip', ['server', 'assets', 'repath'], function (done) {
   return gulp.src('target/dist/**/*')
     .pipe(zip(customPageName + '.zip'))
     .pipe(gulp.dest('target'));
+});
+
+gulp.task('e2e', function (done) {
+  serve({
+    livereload: false
+  });
+  gulp.src(["test/e2e/spec/**/*.js"])
+    .pipe(protractor({
+      configFile: "test/e2e/protractor.conf.js",
+      args: ['--baseUrl', 'http://localhost:' + opt.port]
+    }))
+    .on('error', function (e) {
+      throw e
+    })
+    .on('end', function () {
+      connect.serverClose();
+      done();
+    });
 });
 
 gulp.task('default', function (done) {
