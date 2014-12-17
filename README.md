@@ -1,59 +1,65 @@
-Custom page Angular Seed 
-========================
+# Custom Page seed Project
 
-This project contains a seed project for building custom pages.
-It deliver a zip with the following mandatory structure.
-  ```index.[html | groovy]```
-  ```page.properties``` - contains name, display name & description of the page 
-  ```resources/``` - contains all needed resources
+## About
 
-It also supply a development ready environment (with a local server and livereload).
+This project is designed to help developers start a new implementation of custom page for Bonita BPM.
+It contains an empty Custom Page source and test code structure based on AngularJS, build scripts to run unit tests and end to end tests with Jasmine and Protractor, along with a lightweight application server to run the page, and a script to build a deployable Custom Page zip file for the Bonita PortaL
 
-To create a new custom page, just duplicate this folder and then run
-```npm install```
+The deployable zip format follows the following structure:
+```sh
+.
+├── index.[html | groovy]
+├── page.properties //contains name, display name & description of the page 
+└── resources/ //contains all needed resources
+``` 
+
+## Requirements
+
+The following software/libraries must be installed 
+- [node.js + npm](http://nodejs.org/ 'Download and install node.js') - [How to install node.js on GNU/Linux](https://github.com/joyent/node/wiki/installing-node.js-via-package-manager)
+- bower: `npm i -g bower`
+- gulp: `npm i -g gulp`
+- karma: `npm i -g karma`
+
   
-# Available commands
+## Development
 
-- ``npm run dev`` will start a local server+livereload  and open your default browser.
-- ``npm run build`` will create a target/dist folder with production ready js / css files. It also run generate a zip files containing your custom page. You can find it inside the __target__ dir.
-- ``npm run e2e`` will launch e2e test suite 
-- ``npm test`` will run unit test suite
-
-# Developement
+Before starting development, install all dependencies with:
+```sh 
+$ npm install
+```
+To run the development server tests launch:
 ```shell
 npm run dev
 ```
+During development, jasmine tests run in background with up to date source code.
 
-The build tool used under the hood is [gulp](http://gulpjs.com) but as general rule, you shouldn't have to edit the ``gulpfile.js``.
+All JavaScript files that you create must be referenced in index.html.
+> All the files will be automatically concatenated and minified. Same goes for the css files.
 
-You should reference in index.html for all newly js files. All the files will be automatically concatenated and minified. Same goes for the css files.
+The custom page metadata is located in the file ``src/page.properties``.
 
-During the development, jasmine tests are also ran in background.
+### Build
 
-# Custom Page metadata
+To generate a deployable Bonita Portal custom page zip file launch:
 
-The custom page metadata are located in the file ``src/page.properties``.
-
-# Build
 ```shell
-npm run dist
+npm run build
 ```
 
-# Test you custom page inside the portal
+## All available commands
 
-To test your custom page within the portal, you need to create a profile and associate it to you profile and also create a custom menu bar that reference you custom page.
+- ``npm run dev`` creates a local server with livereload and opens your default browser.
+- ``npm run build`` creates a target folder with production ready js / css files and a custom page zip file in the __target__ dir.
+- ``npm run e2e`` launches the e2e test suite 
+- ``npm test`` launches the unit test suite
 
-### Create a profile
 
-1. Got to Configuration > Profiles and then Add > create a profile (customPage)
-2. then, add your user to this profile.
+### Deploying the page on the portal
 
-### Create a custom menu bar and link your custom page.
+1. Login in Bonita Portal as an administrator
+2. In the Configuration menu, open the Custom Pages section
+3. Add the generated custom page
+4. The page can be either displayed in the portal by adding it to the menu of a custom profile, or be displayed in an Application
 
-1. go configuration / Custom Pages
-2. Click Add and select the generated zip files from target/your-custom-page-1.0.0.SNAPSHOT.zip);
-3. Go to Configuration > Profile and select the profile to associat with the custom page and click More.
-4. Create a new menu bar (Create Menu) and reference the custom page you work on.
-5. Switch your profile from administrator to customPage
-6. your custom  page live inside the portal \o/
-
+For more information on Bonita BPM check the documentation at http://documentation.bonitasoft.com/
