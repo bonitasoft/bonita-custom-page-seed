@@ -19,7 +19,8 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'node_modules/angular/*.js',
-      'node_modules/angular-*/*.js',
+      'node_modules/angular-mocks/angular-mocks.js',
+      'node_modules/angular-bootstrap/dist/ui-bootstrap.js',
       'src/**/*.js',
       'test/unit/**/*Spec.js',
       // include fixtures html  in karma webserver, available at /base/dev/fixtures

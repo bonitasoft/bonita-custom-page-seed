@@ -7,7 +7,7 @@
     "dev": "gulp dev",
     "prebuild": "npm install",
     "build": "gulp default",
-    "test": "karma start --log-level dcebug --single-run",
+    "test": "./node_modules/karma/bin/karma start --log-level dcebug --single-run",
     "pree2e": "./node_modules/protractor/bin/webdriver-manager update",
     "e2e": "gulp e2e"
   },
