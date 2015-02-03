@@ -108,7 +108,7 @@ gulp.task('usemin', ['html2js'], function () {
 /** temp task to rename resource path after building dist */
 var replace = require('gulp-replace');
 gulp.task('repath', ['usemin'], function () {
-  return gulp.src('dist/index.html')
+  return gulp.src('target/dist/index.html')
     .pipe(plumber())
     .pipe(replace(/(src=["|']resources\/([^"']*\.js)["|'])/g, 'src="pageResource?page=' + customPageName + '&location=$2"'))
     .pipe(replace(/(href=["|']resources\/([^"']*\.css)["|'])/g, 'href="pageResource?page=' + customPageName + '&location=$2"'))
@@ -181,7 +181,7 @@ gulp.task('tdd', function (done) {
   }, done);
 });
 
-gulp.task('zip', ['server', 'assets', 'repath'], function (done) {
+gulp.task('zip', ['assets', 'repath'], function (done) {
   return gulp.src('target/dist/**/*')
     .pipe(zip(customPageName + '.zip'))
     .pipe(gulp.dest('target'));
