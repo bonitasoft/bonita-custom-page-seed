@@ -111,7 +111,7 @@ gulp.task('repath', ['usemin'], function () {
   return gulp.src('target/dist/index.html')
     .pipe(plumber())
     .pipe(replace(/(src=["|']resources\/([^"']*\.js)["|'])/g, 'src=$2"'))
-    .pipe(replace(/(href=["|']resources\/([^"']*\.css)["|'])/g, 'src=$2"'))
+    .pipe(replace(/(href=["|']resources\/([^"']*\.css)["|'])/g, 'href=$2"'))
     .pipe(gulp.dest('target/dist'));
 });
 
