@@ -110,8 +110,8 @@ var replace = require('gulp-replace');
 gulp.task('repath', ['usemin'], function () {
   return gulp.src('target/dist/index.html')
     .pipe(plumber())
-    .pipe(replace(/(src=["|']resources\/([^"']*\.js)["|'])/g, 'src="pageResource?page=' + customPageName + '&location=$2"'))
-    .pipe(replace(/(href=["|']resources\/([^"']*\.css)["|'])/g, 'href="pageResource?page=' + customPageName + '&location=$2"'))
+    .pipe(replace(/(src=["|']resources\/([^"']*\.js)["|'])/g, '$2"'))
+    .pipe(replace(/(href=["|']resources\/([^"']*\.css)["|'])/g, '$2"'))
     .pipe(gulp.dest('target/dist'));
 });
 
