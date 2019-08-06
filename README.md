@@ -1,5 +1,9 @@
 # Custom Page seed Project
 
+**:warning: This project is now archived. It has been deprecated in favor of UI Designer page + REST API extension :warning:**
+
+
+
 ## About
 
 This project is designed to help developers start a new implementation of custom page for Bonita BPM.
